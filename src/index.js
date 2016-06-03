@@ -1,6 +1,3 @@
-import {generateStreams} from './stream';
-import {generateHoneycomb} from './honeycomb';
+import {createHoneycomb} from './honeycomb';
 
-const container = document.getElementById('root');
-const honeycomb = generateHoneycomb({container});
-const streams = generateStreams({container, honeycomb});
+createHoneycomb(document.getElementById('root'));

@@ -17,6 +17,7 @@ export const calculateHexVertices = () =>
 
 // coordinate conversions
 
+// http://www.redblobgames.com/grids/hexagons/
 const SQRT3 = Math.sqrt(3);
 
 const cubeToHex = ({x, z}) => ({q: x, r: z});

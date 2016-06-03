@@ -1,6 +1,6 @@
 import T from 'three';
 
-import {PURPLE, WHITE} from './color';
+import {PURPLE, WHITE} from '../util/color';
 
 export const generatePlane = () =>
   new T.Mesh(

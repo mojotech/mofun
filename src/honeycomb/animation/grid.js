@@ -1,8 +1,8 @@
 import R from 'ramda';
 import T from 'three';
 
-import {WHITE} from './color';
-import {calculateHexVertices, hexToPixel} from './hex';
+import {WHITE} from '../util/color';
+import {calculateHexVertices, hexToPixel} from '../util/hex';
 
 export const generateGrid = (size) => {
   const grid = new T.Object3D();
@@ -19,12 +19,13 @@ export const generateGrid = (size) => {
   grid.userData.geometry = geometry;
   grid.userData.material = material;
 
-  R.forEach((q) =>
-            R.forEach((r) => {
-              const line = new T.Line(geometry, material);
-              line.position.copy(hexToPixel({q, r}));
-              grid.add(line);
-            }, range), range);
+  R.forEach(
+    (q) =>
+      R.forEach((r) => {
+        const line = new T.Line(geometry, material);
+        line.position.copy(hexToPixel({q, r}));
+        grid.add(line);
+      }, range), range);
 
   return grid;
 };

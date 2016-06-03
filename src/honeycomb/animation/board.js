@@ -2,8 +2,8 @@ import R from 'ramda';
 import T from 'three';
 import W from 'tween.js';
 
-import {WHITE} from './color';
-import {calculateHexVertices, hexToPixel, pixelToHex} from './hex';
+import {WHITE} from '../util/color';
+import {calculateHexVertices, hexToPixel, pixelToHex} from '../util/hex';
 
 const generateHex = () => {
   const s = new T.Shape();

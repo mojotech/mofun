@@ -84,9 +84,9 @@ export const positionCamera = ({camera, scene}, {x, y}) => {
 };
 
 export const resizeRenderer = ({renderer, camera}, c)  => {
-  camera.aspect = c.w / c.h;
+  camera.aspect = c.width / c.height;
   camera.updateProjectionMatrix();
-  renderer.setSize(c.w, c.h);
+  renderer.setSize(c.width, c.height);
 };
 
 export const enterTile = (a, t) => {

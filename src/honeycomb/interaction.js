@@ -3,43 +3,47 @@ import F from 'flyd';
 
 import {createSteppedPositionStream} from './util/stream';
 
-const createContainerMeasurementsStream = (container, windowResize) =>
-  windowResize.map(() => ({
-    w: container.clientWidth,
-    h: container.clientHeight,
-    x: container.offsetLeft,
-    y: container.offsetTop
-  }));
+const createContainerRectStream = (container, windowResize, windowScroll) =>
+  F.merge(windowResize, windowScroll).map(() => container.getBoundingClientRect());
 
-const createMousePositionStream = (mouseMove, mouseOver, containerMeasurements) =>
-  F.combine((mouse, over, container, self) => {
+const createMousePositionStream = (mouseMove, containerRect) =>
+  F.combine((mouse, container, self) => {
     const m = mouse();
     const c = container();
 
-    if(over()) {
+    if(m.clientX > c.left &&
+       m.clientX < c.right &&
+       m.clientY > c.top &&
+       m.clientY < c.bottom) {
       self({
-        x: ((m.clientX - c.x) / c.w) * 2 - 1,
-        y: - ((m.clientY - c.y) / c.h) * 2 + 1
+        x: ((m.clientX - c.left) / c.width) * 2 - 1,
+        y: - ((m.clientY - c.top) / c.height) * 2 + 1
       });
+    } else {
+      self(null);
     }
-  }, [mouseMove, mouseOver, containerMeasurements]);
+  }, [mouseMove, containerRect]);
 
 const createCameraToPositionStream = (mousePosition) =>
-  mousePosition.map((m) => ({
-    x: m.x,
-    y: m.y - 5
-  }));
+  F.combine((m, self) => {
+    m() && self({
+      x: m().x,
+      y: m().y -5
+    });
+  }, [mousePosition]);
 
 const createLightToPositionStream = (mousePosition) =>
-  mousePosition.map((m) => ({
-    x: 5 * -m.x,
-    y: 5 * -m.y
-  }));
+  F.combine((m, self) => {
+    m() && self({
+      x: 5 * -m().x,
+      y: 5 * -m().y
+    });
+  }, [mousePosition]);
 
-const createEnteredTileStream = (getTileUnderMouse, mouseOut, mousePosition) =>
+const createEnteredTileStream = (getTileUnderMouse, mousePosition) =>
   F.transduce(
     R.compose(R.map(getTileUnderMouse), R.dropRepeats),
-    F.merge(mouseOut, mousePosition)
+    mousePosition
   );
 
 const createExitedTileStream = (enteredTile) =>
@@ -47,17 +51,16 @@ const createExitedTileStream = (enteredTile) =>
 
 export const createStreams = ({container, getTileUnderMouse}) => {
   const mouseMove = F.stream();
-  const mouseOver = F.stream();
   const windowResize = F.stream();
+  const windowScroll = F.stream();
   const animationFrame = F.stream();
-  const mouseOut = F.transduce(R.reject(R.identity), mouseOver);
-  const containerMeasurements = createContainerMeasurementsStream(container, windowResize);
-  const mousePosition = createMousePositionStream(mouseMove, mouseOver, containerMeasurements);
+  const containerRect = createContainerRectStream(container, windowResize, windowScroll);
+  const mousePosition = createMousePositionStream(mouseMove, containerRect);
   const cameraToPosition = createCameraToPositionStream(mousePosition);
   const lightToPosition = createLightToPositionStream(mousePosition);
   const cameraPosition = createSteppedPositionStream(animationFrame, cameraToPosition, 0.5);
   const lightPosition = createSteppedPositionStream(animationFrame, lightToPosition, 0.5);
-  const enteredTile = createEnteredTileStream(getTileUnderMouse, mouseOut, mousePosition);
+  const enteredTile = createEnteredTileStream(getTileUnderMouse, mousePosition);
   const exitedTile = createExitedTileStream(enteredTile);
 
   windowResize(null);
@@ -68,11 +71,10 @@ export const createStreams = ({container, getTileUnderMouse}) => {
 
   return {
     mouseMove,
-    mouseOver,
     windowResize,
+    windowScroll,
     animationFrame,
-    mouseOut,
-    containerMeasurements,
+    containerRect,
     mousePosition,
     cameraToPosition,
     lightToPosition,
@@ -87,12 +89,11 @@ export const endStreams = ({streams}) => {
   R.forEach((stream) => stream.end(true), streams);
 };
 
-export const addListeners = ((container, {windowResize, mouseMove, mouseOver}) => {
+export const addListeners = ((container, {windowResize, windowScroll, mouseMove}) => {
   const listeners = [
     [window, 'resize', windowResize],
-    [window, 'mousemove', mouseMove],
-    [container, 'mouseout', () => mouseOver(false)],
-    [container, 'mouseover', () => mouseOver(true)]
+    [window, 'scroll', windowScroll],
+    [window, 'mousemove', mouseMove]
   ];
 
   R.forEach(

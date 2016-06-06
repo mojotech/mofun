@@ -35,7 +35,7 @@ export const createHoneycomb = (container) => {
   F.on(R.partial(enterTile, [animation]), streams.enteredTile);
   F.on(R.partial(positionLight, [animation]), streams.lightPosition);
   F.on(R.partial(positionCamera, [animation]), streams.cameraPosition);
-  F.on(R.partial(resizeRenderer, [animation]), streams.containerMeasurements);
+  F.on(R.partial(resizeRenderer, [animation]), streams.containerRect);
   F.on(R.partial(renderAnimationFrame, [animation]), streams.animationFrame);
 
   return {listeners, animation, streams};

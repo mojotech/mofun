@@ -1,5 +1,9 @@
 import {createHoneycomb, destroyHoneycomb} from './honeycomb';
 
+const Mofun = {createHoneycomb, destroyHoneycomb};
+
 if(window) {
-  window.Mofun = {createHoneycomb, destroyHoneycomb};
+  window.Mofun = Mofun;
 }
+
+export default Mofun;

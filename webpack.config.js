@@ -28,13 +28,7 @@ const common = {
         exclude: PATHS.exclude
       }
     ]
-  },
-
-  plugins: [
-    new webpack.ProvidePlugin({
-      React: 'react'
-    })
-  ]
+  }
 };
 
 const configs = {
@@ -43,32 +37,19 @@ const configs = {
   watch: merge(common, {
     devServer: {
       contentBase: PATHS.build,
-      historyApiFallback: true,
-      hot: true,
       inline: true,
       progress: true,
       stats: 'errors-only',
       host: process.env.HOST || '0.0.0.0',
       port: process.env.PORT || '8081'
-    },
+    }
+  }),
 
-    module: {
-      loaders: [
-        {
-          test: /\.jsx?$/,
-          loaders: ['react-hot', 'babel'],
-          exclude: PATHS.exclude
-        }
-      ]
-    },
-
+  build: merge(common, {
     plugins: [
-      new webpack.HotModuleReplacementPlugin(),
-      new webpack.ProvidePlugin({
-        React: 'react'
-      })
-    ]
-  })
+      new webpack.optimize.UglifyJsPlugin()
+    ]}
+  )
 };
 
 module.exports = configs[process.env.npm_lifecycle_event] || common;

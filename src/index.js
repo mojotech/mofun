@@ -1,3 +1,5 @@
-import {createHoneycomb} from './honeycomb';
+import {createHoneycomb, destroyHoneycomb} from './honeycomb';
 
-createHoneycomb(document.getElementById('root'));
+if(window) {
+  window.Mofun = {createHoneycomb, destroyHoneycomb};
+}

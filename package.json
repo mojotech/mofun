@@ -1,25 +1,22 @@
 {
-  "name": "mofun",
+  "name": "mojo-mofun",
   "version": "0.0.1",
   "description": "mojo fun",
   "scripts": {
     "clean": "rm -rf public",
     "start": "webpack",
-    "watch": "webpack-dev-server"
+    "watch": "webpack-dev-server",
+    "build": "webpack",
+    "prepublish": "npm run compile"
   },
   "author": "wkf",
   "license": "MIT",
   "devDependencies": {
+    "babel-cli": "^6.9.0",
     "babel-core": "^6.8.0",
     "babel-loader": "^6.2.4",
     "babel-plugin-transform-object-rest-spread": "^6.8.0",
     "babel-preset-es2015": "^6.6.0",
-    "babel-preset-react": "^6.5.0",
-    "react": "^15.0.2",
-    "react-dom": "^15.0.2",
-    "react-hot-loader": "^1.3.0",
-    "react-three": "^0.9.1",
-    "three": "^0.74.0",
     "webpack": "^1.13.0",
     "webpack-dev-server": "^1.14.1",
     "webpack-merge": "^0.12.0"
@@ -27,6 +24,7 @@
   "dependencies": {
     "flyd": "^0.2.2",
     "ramda": "^0.21.0",
+    "three": "^0.74.0",
     "tween.js": "^16.3.4"
   }
 }

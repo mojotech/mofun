@@ -1,0 +1,12 @@
+{
+  "name": "mojo-mofun",
+  "description": "mojo fun",
+  "main": [
+    "public/app.bundle.js"
+  ],
+  "ignore": [
+    "src",
+    "lib",
+    "node_modules"
+  ]
+}

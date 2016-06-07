@@ -1,6 +1,6 @@
 {
   "name": "mojo-mofun",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "mojo fun",
   "scripts": {
     "clean": "rm -rf public",

@@ -21,6 +21,18 @@ const createMousePositionStream = (mouseOut, mouseMove, containerRect) =>
              x: ((m.clientX - c.left) / c.width) * 2 - 1,
              y: - ((m.clientY - c.top) / c.height) * 2 + 1
            });
+      } else if (m.clientX > c.left &&
+                 m.clientX < c.right) {
+        self({
+          x: ((m.clientX - c.left) / c.width) * 2 - 1,
+          y: m.clientY > c.top ? -1 : 1
+        });
+      } else if (m.clientY > c.top &&
+                 m.clientY < c.bottom) {
+        self({
+          x: m.clientX > c.left ? 1 : -1,
+          y: - ((m.clientY - c.top) / c.height) * 2 + 1
+        });
       } else {
         self(null);
       }
@@ -42,9 +54,12 @@ const createLightToPositionStream = (mousePosition) =>
     });
   }, [mousePosition]);
 
+const mouseOnEdge = (m) =>
+  m && (Math.abs(m.x) === 1 || Math.abs(m.y) === 1);
+
 const createEnteredTileStream = (getTileUnderMouse, mousePosition) =>
   F.transduce(
-    R.compose(R.map(getTileUnderMouse), R.dropRepeats),
+    R.compose(R.reject(mouseOnEdge), R.map(getTileUnderMouse), R.dropRepeats),
     mousePosition
   );
 

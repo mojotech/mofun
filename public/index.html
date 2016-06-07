@@ -9,6 +9,9 @@
        margin: 0;
        padding: 0;
      }
+     body {
+       height: 10000px;
+     }
      #root {
        position: absolute;
        top: 100px;
@@ -20,9 +23,9 @@
   </head>
   <body>
     <div id="root"></div>
-    <script src="/app.bundle.js"></script>
+    <script src="/mofun.js"></script>
     <script type="text/javascript">
-     Mofun.createHoneycomb(document.getElementById('root'));
+     mofun.default.createHoneycomb(document.getElementById('root'));
     </script>
   </body>
 </html>

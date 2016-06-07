@@ -1,8 +1,8 @@
 {
-  "name": "mojo-mofun",
+  "name": "mofun",
   "description": "mojo fun",
   "main": [
-    "public/app.bundle.js"
+    "public/mofun.min.js"
   ],
   "ignore": [
     "src",

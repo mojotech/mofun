@@ -12,12 +12,15 @@ const common = {
   entry: PATHS.app,
 
   resolve: {
-    extensions: ['', '.js', '.jsx']
+    extensions: ['', '.js']
   },
 
   output: {
     path: PATHS.build,
-    filename: 'app.bundle.js'
+    filename: 'mofun.js',
+    library: 'mofun',
+    libraryTarget: 'umd',
+    umdNamedDefine: true
   },
 
   module: {
@@ -46,6 +49,9 @@ const configs = {
   }),
 
   build: merge(common, {
+    output: {
+      filename: 'mofun.min.js'
+    },
     plugins: [
       new webpack.optimize.UglifyJsPlugin()
     ]}

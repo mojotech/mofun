@@ -6,23 +6,25 @@ import {createSteppedPositionStream} from './util/stream';
 const createContainerRectStream = (container, windowResize, windowScroll) =>
   F.merge(windowResize, windowScroll).map(() => container.getBoundingClientRect());
 
-const createMousePositionStream = (mouseMove, containerRect) =>
-  F.combine((mouse, container, self) => {
-    const m = mouse();
-    const c = container();
+const createMousePositionStream = (mouseOut, mouseMove, containerRect) =>
+  F.merge(
+    mouseOut.map(() => null),
+    F.combine((mouse, container, self) => {
+      const m = mouse();
+      const c = container();
 
-    if(m.clientX > c.left &&
-       m.clientX < c.right &&
-       m.clientY > c.top &&
-       m.clientY < c.bottom) {
-      self({
-        x: ((m.clientX - c.left) / c.width) * 2 - 1,
-        y: - ((m.clientY - c.top) / c.height) * 2 + 1
-      });
-    } else {
-      self(null);
-    }
-  }, [mouseMove, containerRect]);
+      if(m.clientX > c.left &&
+         m.clientX < c.right &&
+         m.clientY > c.top &&
+         m.clientY < c.bottom) {
+           self({
+             x: ((m.clientX - c.left) / c.width) * 2 - 1,
+             y: - ((m.clientY - c.top) / c.height) * 2 + 1
+           });
+      } else {
+        self(null);
+      }
+    }, [mouseMove, containerRect]));
 
 const createCameraToPositionStream = (mousePosition) =>
   F.combine((m, self) => {
@@ -50,12 +52,13 @@ const createExitedTileStream = (enteredTile) =>
   F.transduce(R.dropLast(1), enteredTile);
 
 export const createStreams = ({container, getTileUnderMouse}) => {
+  const mouseOut = F.stream();
   const mouseMove = F.stream();
   const windowResize = F.stream();
   const windowScroll = F.stream();
   const animationFrame = F.stream();
   const containerRect = createContainerRectStream(container, windowResize, windowScroll);
-  const mousePosition = createMousePositionStream(mouseMove, containerRect);
+  const mousePosition = createMousePositionStream(mouseOut, mouseMove, containerRect);
   const cameraToPosition = createCameraToPositionStream(mousePosition);
   const lightToPosition = createLightToPositionStream(mousePosition);
   const cameraPosition = createSteppedPositionStream(animationFrame, cameraToPosition, 0.5);
@@ -70,6 +73,7 @@ export const createStreams = ({container, getTileUnderMouse}) => {
   cameraPosition({x: 0, y: -5});
 
   return {
+    mouseOut,
     mouseMove,
     windowResize,
     windowScroll,
@@ -89,11 +93,12 @@ export const endStreams = ({streams}) => {
   R.forEach((stream) => stream.end(true), streams);
 };
 
-export const addListeners = ((container, {windowResize, windowScroll, mouseMove}) => {
+export const addListeners = ((container, {windowResize, windowScroll, mouseOut, mouseMove}) => {
   const listeners = [
+    [window, 'mouseout', mouseOut],
+    [window, 'mousemove', mouseMove],
     [window, 'resize', windowResize],
-    [window, 'scroll', windowScroll],
-    [window, 'mousemove', mouseMove]
+    [window, 'scroll', windowScroll]
   ];
 
   R.forEach(

@@ -31,9 +31,6 @@ export const generateGrid = (size) => {
 };
 
 export const disposeGrid = (grid) => {
-  R.forEach((c) => c.dispose(), grid.children);
-
   grid.userData.geometry.dispose();
   grid.userData.material.dispose();
-  grid.dispose();
 };

@@ -104,8 +104,8 @@ export const createStreams = ({container, getTileUnderMouse}) => {
   };
 };
 
-export const endStreams = ({streams}) => {
-  R.forEach((stream) => stream.end(true), streams);
+export const endStreams = (streams) => {
+  R.forEach((k) => streams[k].end(true), R.keys(streams));
 };
 
 export const addListeners = ((container, {windowResize, windowScroll, mouseOut, mouseMove}) => {

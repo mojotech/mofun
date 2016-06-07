@@ -59,12 +59,9 @@ export const generateBoard = (size) => {
 export const disposeBoard = (board) => {
   R.forEach((c) => {
     c.material.dispose();
-    c.dispose();
   }, board.children);
 
-  board.userData.hexagon.dispose();
   board.userData.geometry.dispose();
-  board.dispose();
 };
 
 export const getTileAtPixel = (board, pixel) => {

@@ -15,5 +15,4 @@ export const generatePlane = () =>
 export const disposePlane = (plane) => {
   plane.geometry.dispose();
   plane.material.dispose();
-  plane.dispose();
 };

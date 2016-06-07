@@ -45,15 +45,12 @@ export const generateAnimation = ({container}) => {
   return {container, renderer, camera, grid, board, light, plane, planeZ, raycaster, scene};
 };
 
-export const disposeAnimation = ({renderer, camera, grid, board, light, plane, planeZ, raycaster, scene}) => {
+export const disposeAnimation = ({container, renderer, camera, grid, board, light, plane, planeZ, raycaster, scene}) => {
+  container.removeChild(renderer.domElement);
+
   disposeGrid(grid);
   disposeBoard(board);
   disposePlane(plane);
-  camera.dispose();
-  light.dispose();
-  planeZ.dispose();
-  raycaster.dispose();
-  scene.dispose();
   renderer.dispose();
 };
 

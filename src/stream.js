@@ -19,6 +19,7 @@ const steppedPositionStream = (clock, toPosition, step) =>
 
       if(x !== o.x || y !== o.y) {
         self({
+          //what's step for?
           x: stepToward(x, o.x, step),
           y: stepToward(y, o.y, step)
         });
@@ -55,6 +56,16 @@ export const generateStreams = ({honeycomb, container}) => {
     const m = mouse();
     const c = container();
 
+    // I might do something like:
+    // F.transduce(
+    //   R.compose(
+    //     normalizeMousePosition,
+    //     R.reject(([mo, _, _]) => mo)
+    //   ),
+    //   F.zipStreams([mouseOver, mouseMove, containerMeasurements)
+    // )
+    // where normalizeMousePosition was the calculation to normalize the position, and zipStreams is roughly
+    // F.combinee((arg1, arg2, ...) => [arg1(), arg2(), ...], [stream1, stream2, ...])
     if(over()) {
       self({
         x: ((m.clientX - c.x) / c.w) * 2 - 1,
@@ -77,11 +88,12 @@ export const generateStreams = ({honeycomb, container}) => {
 
   const enteredTile =  F.transduce(
     R.compose(R.map(R.partial(getTileUnderMouse, [honeycomb])), R.dropRepeats),
-    F.merge(mouseOut, mousePosition)
+    F.merge(mouseOut, mousePosition) // won't this create a stream of type Either Bool MousePosition? That's probably not great
   );
 
-  const exitedTile = F.transduce(R.dropLast(1), enteredTile);
+  const exitedTile = F.transduce(R.dropLast(1), enteredTile); // I don't understand how this one works.
 
+  // if you want to be pedantic, you could probably rig up the step (0.5) to a constant stream or something
   const lightPosition = steppedPositionStream(animationFrame, lightToPosition, 0.5);
   lightPosition({x: 0, y: 0});
 

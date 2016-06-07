@@ -59,6 +59,10 @@ export const disposeHoneycomb = ({renderer, camera, grid, board, light, plane, p
 };
 
 export const getTileUnderMouse = ({raycaster, planeZ, camera, board}, mouse) => {
+  // This is a kind of anti-pattern I think. We're making a decision here that
+  // the caller should be responsible for, namely, should this function do
+  // anything. If it shouldn't then it shouldn't be called. It just adds
+  // conceptual/syntatic/comprehension overhead
   if(mouse) {
     raycaster.setFromCamera(mouse, camera);
 
@@ -91,6 +95,10 @@ export const resizeRenderer = ({renderer, camera}, c)  => {
 };
 
 export const enterTile = (honeycomb, t) => {
+  // This is a kind of anti-pattern I think. We're making a decision here that
+  // the caller should be responsible for, namely, should this function do
+  // anything. If it shouldn't then it shouldn't be called. It just adds
+  // conceptual/syntatic/comprehension overhead
   if(t) {
     t.material.opacity = 0.3;
     t.scale.set(0.6, 0.6, 1);
@@ -114,6 +122,10 @@ export const enterTile = (honeycomb, t) => {
 };
 
 export const exitTile = (honeycomb, t) => {
+  // This is a kind of anti-pattern I think. We're making a decision here that
+  // the caller should be responsible for, namely, should this function do
+  // anything. If it shouldn't then it shouldn't be called. It just adds
+  // conceptual/syntatic/comprehension overhead
   if(t) {
     R.forEach((t) => t.stop(), t.userData.tweens || []);
     t.userData.tweens = [
